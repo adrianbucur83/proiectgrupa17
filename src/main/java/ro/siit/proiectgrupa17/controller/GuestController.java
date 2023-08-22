@@ -12,6 +12,7 @@ import ro.siit.proiectgrupa17.repository.GuestRepository;
 import ro.siit.proiectgrupa17.service.GuestService;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,6 +48,24 @@ public class GuestController {
                 .build();
 
         return guestService.createGuest(guest);
+    }
+
+    @PatchMapping("/guests/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String updateCnp(@PathVariable("id") int id, @RequestBody Map<String, Object> update) {
+        Guest guest = guestService.findById(id);
+        long cnp = Long.parseLong(update.get("cnp").toString());
+
+        if(guest!=null){
+            guest.setCnp(cnp);
+            guestService.updateCnp(guest);
+            return "CNP modified: success!";
+        } else {
+            return "error: cnp can't be changed for this user!";
+        }
+
+
     }
 
 }
