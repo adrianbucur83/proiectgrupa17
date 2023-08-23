@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ro.siit.proiectgrupa17.model.Guest;
+import ro.siit.proiectgrupa17.model.dto.CreateGuestDto;
 import ro.siit.proiectgrupa17.repository.GuestRepository;
 import ro.siit.proiectgrupa17.service.GuestService;
 
@@ -26,27 +27,39 @@ public class GuestController {
         return "guests";
     }
 
+    @GetMapping("/findById")
+    public String findByIdForm() {
+        return "findById";
+    }
+
+    @GetMapping("/get1ById")
+    public String forwarder(@RequestParam String id) {
+        return "redirect:/guests/" + id;
+    }
     @GetMapping("/guests/{id}")
-    @ResponseBody
-    public Guest findGuestById(@PathVariable("id") int id) {
-        return guestService.findById(id);
+    public String findGuestById(@PathVariable("id") int id, Model model) {
+        Guest guest = guestService.findById(id);
+        model.addAttribute("guests", List.of(guest));
+        return "guests";
     }
 
     @PostMapping("/guests")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public String createGuests(@RequestParam("firstName") String firstName,
-                               @RequestParam("lastName") String lastName,
-                               @RequestParam("cnp") long cnp,
-                               @RequestParam("phoneNumber") String phoneNumber) {
-        Guest guest = Guest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .cnp(cnp)
-                .phoneNumber(phoneNumber)
-                .build();
+    public String createGuests(@RequestBody CreateGuestDto createGuestDto) {
+        return guestService.createGuest(createGuestDto);
+    }
 
-        return guestService.createGuest(guest);
+    @PatchMapping("/guests")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateGuest(@RequestParam("id") int id, @RequestParam("phoneNumber") String phoneNumber) {
+         guestService.updateGuestById(id, phoneNumber);
+    }
+
+    @DeleteMapping("/guests/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGuest(@PathVariable("id") int id) {
+        guestService.deleteGuestById(id);
     }
 
 }
