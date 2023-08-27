@@ -40,6 +40,7 @@ public class GuestController {
     public String findGuestById(@PathVariable("id") int id, Model model) {
         Guest guest = guestService.findById(id);
         model.addAttribute("guests", List.of(guest));
+        System.out.println("Found guest with ID: " + id);
         return "guests";
     }
 
@@ -47,6 +48,7 @@ public class GuestController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public String createGuests(@RequestBody CreateGuestDto createGuestDto) {
+        System.out.println("Guest created");
         return guestService.createGuest(createGuestDto);
     }
 
@@ -54,6 +56,7 @@ public class GuestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateGuest(@RequestParam("id") int id, @RequestParam("phoneNumber") String phoneNumber) {
          guestService.updateGuestById(id, phoneNumber);
+         System.out.println("Guest updated with ID: " + id);
     }
 
     @DeleteMapping("/guests/{id}")
@@ -62,4 +65,25 @@ public class GuestController {
         guestService.deleteGuestById(id);
     }
 
+    @GetMapping("/deleteConfirmation/{id}")
+    public String deleteConfirmation(@PathVariable("id") int id, Model model) {
+        Guest guest = guestService.findById(id);
+        model.addAttribute("guest", guest);
+        return "deleteConfirmation";
+    }
+
+    @PostMapping("/guests/{id}/delete")
+    public String deleteGuest(@PathVariable("id") int id, @RequestParam("confirmation") String confirmation) {
+        if (confirmation.equals("yes")) {
+            guestService.deleteGuestById(id);
+            System.out.println("Guest deleted with ID: " + id);
+
+        } else if (confirmation.equals("undo")) {
+        System.out.println("Delete operation was undone for guest with ID: " + id);
+    }
+        else if (confirmation.equals("no")) {
+            System.out.println("Delete operation complete for guest with ID: " + id);
+    }
+        return "redirect:/guests";
+    }
 }
