@@ -26,7 +26,7 @@ public class GuestService {
                 .firstName(createGuestDto.getFirstName())
                 .lastName(createGuestDto.getLastName())
                 .build();
-        validateGuest(guest);
+//        validateGuest(guest);
         return "Create guest with id: " + guestRepository.save(guest).getId();
     }
 
@@ -58,9 +58,4 @@ public class GuestService {
         guestRepository.deleteById(id);
     }
 
-    void batchDelete(int[] ids) {
-        for (int id: ids) {
-            deleteGuestById(id);
-        }
-    }
 }
