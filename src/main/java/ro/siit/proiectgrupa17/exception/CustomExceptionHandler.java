@@ -11,10 +11,10 @@ import org.springframework.web.server.ResponseStatusException;
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<CustomErrorResponse> handleResponseStatusException(ResponseStatusException ex) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<CustomErrorResponse> handleBusinessException(BusinessException ex) {
         CustomErrorResponse errorResponse = new CustomErrorResponse();
-        errorResponse.setStatus(ex.getStatusCode().value());
+        errorResponse.setStatus(ex.getStatusCode());
         errorResponse.setCause(ex.getCause() != null ? ex.getCause().toString() : "Unknown Cause");
 
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
