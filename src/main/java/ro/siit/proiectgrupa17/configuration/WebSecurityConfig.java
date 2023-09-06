@@ -1,5 +1,6 @@
 package ro.siit.proiectgrupa17.configuration;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +23,7 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/room").permitAll()
+                        .requestMatchers("/statistics").hasRole("HOTEL_MANAGER")
                         .requestMatchers("/admin").hasAnyRole("ADMIN", "CHUCK_NORRIS")
                         .requestMatchers("/guests").hasRole("HOTEL_MANAGER")
                         .anyRequest().authenticated()
@@ -36,7 +38,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder setEncoder(){
+    public PasswordEncoder setEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -64,5 +66,16 @@ public class WebSecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(user, manager1);
 //    }
+
+    @Bean(name = "standardEncoder")
+    public PasswordEncoder encoder() {
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //..........
+
+        return encoder;
+
+
+    }
 
 }
